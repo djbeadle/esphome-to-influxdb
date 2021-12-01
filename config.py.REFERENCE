@@ -1,0 +1,1 @@
+INFLUX_DB_CONFIG = { 'host':'raspberrypi.local',  'port': 8086, 'database':'some_database' }
