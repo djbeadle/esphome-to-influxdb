@@ -58,13 +58,13 @@ SENSORS = [
         },
         {
            "hostname": "airgradient-two.local",
-           "sensor_id": "sensor-temperature",
+           "sensor_id": "temperature",
            "influx_db_measurement": "office",
            "influx_db_field": "celsius",
         },
         {
            "hostname": "airgradient-two.local",
-           "sensor_id": "sensor-humidity",
+           "sensor_id": "humidity",
            "influx_db_measurement": "office",
            "influx_db_field": "relative_humidity_pct",
         },
@@ -82,6 +82,11 @@ for sensor in SENSORS:
         response = requests.request("GET", f'http://{sensor["hostname"]}/{sensor_type}/{sensor["sensor_id"]}')
 
         json_data = json.loads(response.text)
+
+        if json_data.strip() == '':
+            print("ERROR: The response was empty, perhaps the sensor_id is invalid.")
+            if sensor['sensor_id'].strip().startswith('sensor'):
+                print('    Try removing "sensor" from the sensor_id specified in this file')
 
         # print("Got this data back:")
         # print(json_data)
@@ -105,7 +110,6 @@ for sensor in SENSORS:
         print(f'  {e}')
 
         print(json.dumps(json_data, indent=4))
-
-
+        print("---")
 
 
