@@ -53,15 +53,21 @@ SENSORS = [
         {
             "hostname": "airgradient-two.local",
             "sensor_id": "particulate_matter_25m_concentration",
-            "influx_db_measurement": "living_room",
+            "influx_db_measurement": "office",
             "influx_db_field": "pm_two_five"
         },
-        # {
-        #    "hostname": "airgradient-two.local",
-        #    "sensor_id": "senseair_co2",
-        #    "influx_db_measurement": "airgradient_two",
-        #    "influx_db_field": "co2",
-        # },
+        {
+           "hostname": "airgradient-two.local",
+           "sensor_id": "sensor-temperature",
+           "influx_db_measurement": "office",
+           "influx_db_field": "celsius",
+        },
+        {
+           "hostname": "airgradient-two.local",
+           "sensor_id": "sensor-humidity",
+           "influx_db_measurement": "office",
+           "influx_db_field": "relative_humidity_pct",
+        },
     ]
 
 #--------------------------------------------------------
@@ -69,6 +75,8 @@ SENSORS = [
 #--------------------------------------------------------
 client = InfluxDBClient(**INFLUX_DB_CONFIG)
 for sensor in SENSORS:
+    print('.', end='')
+    json_data = None
     try:
         sensor_type = sensor.get("type", "sensor")
         response = requests.request("GET", f'http://{sensor["hostname"]}/{sensor_type}/{sensor["sensor_id"]}')
@@ -93,8 +101,10 @@ for sensor in SENSORS:
 
         # print(response)
     except Exception as e:
-        print(f'{datetime.datetime.now()} - {sensor["hostname"]} - {sensor["influx_db_field"]}')
+        print(f'EXCEPTION: {datetime.datetime.now()} - {sensor["hostname"]} - {sensor["influx_db_field"]}')
         print(f'  {e}')
+
+        print(json.dumps(json_data, indent=4))
 
 
 
